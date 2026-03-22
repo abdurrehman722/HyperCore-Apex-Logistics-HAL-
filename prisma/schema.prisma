@@ -1,0 +1,163 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String       @id @default(cuid())
+  name          String
+  email         String       @unique
+  password      String
+  role          Role         @default(VIEWER)
+  department    String?
+  avatarUrl     String?
+  isActive      Boolean      @default(true)
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  auditLogs     AuditLedger[]
+
+  @@map("users")
+}
+
+model Vehicle {
+  id            String        @id @default(cuid())
+  plateNumber   String        @unique
+  model         String
+  type          VehicleType
+  status        VehicleStatus @default(IDLE)
+  driverName    String?
+  driverId      String?
+  loadCapacity  Float
+  currentLoad   Float         @default(0)
+  assignedBayId String?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  @@map("vehicles")
+}
+
+model LoadingBay {
+  id            String        @id @default(cuid())
+  bayNumber     Int           @unique
+  zone          String
+  status        BayStatus     @default(AVAILABLE)
+  occupiedBy    String?
+  maxCapacity   Float
+  currentLoad   Float         @default(0)
+  notes         String?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  @@map("loading_bays")
+}
+
+model InventoryItem {
+  id            String       @id @default(cuid())
+  sku           String       @unique
+  name          String
+  description   String?
+  category      String
+  quantity      Int          @default(0)
+  unit          String
+  warehouseZone String
+  minStock      Int          @default(0)
+  maxStock      Int
+  unitWeight    Float
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  @@map("inventory_items")
+}
+
+model Task {
+  id            String       @id @default(cuid())
+  title         String
+  description   String?
+  type          TaskType
+  status        TaskStatus   @default(PENDING)
+  priority      Priority     @default(MEDIUM)
+  assignedTo    String?
+  vehicleId     String?
+  bayId         String?
+  scheduledAt   DateTime?
+  completedAt   DateTime?
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  @@map("tasks")
+}
+
+model AuditLedger {
+  id            String       @id @default(cuid())
+  sequence      Int          @unique @default(autoincrement())
+  actorId       String
+  actorName     String
+  actorRole     String
+  action        String
+  entityType    String
+  entityId      String?
+  entityName    String?
+  metadata      Json?
+  ipAddress     String?
+  hash          String       @unique
+  previousHash  String
+  timestamp     DateTime     @default(now())
+  actor         User         @relation(fields: [actorId], references: [id])
+
+  @@map("audit_ledger")
+}
+
+enum Role {
+  SUPER_ADMIN
+  FLEET_MANAGER
+  WAREHOUSE_OPS
+  VIEWER
+}
+
+enum VehicleType {
+  TRUCK
+  VAN
+  FORKLIFT
+  CARGO_BIKE
+}
+
+enum VehicleStatus {
+  IDLE
+  EN_ROUTE
+  LOADING
+  MAINTENANCE
+  OFFLINE
+}
+
+enum BayStatus {
+  AVAILABLE
+  OCCUPIED
+  MAINTENANCE
+  RESERVED
+}
+
+enum TaskType {
+  DELIVERY
+  PICKUP
+  LOADING
+  UNLOADING
+  INSPECTION
+}
+
+enum TaskStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
