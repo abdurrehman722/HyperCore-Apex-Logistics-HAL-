@@ -1,0 +1,133 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+:root {
+  --background: #0a0e1a;
+  --foreground: #e2e8f0;
+  --card: #0f1629;
+  --border: #1e2d4a;
+  --accent: #00d4ff;
+  --accent2: #7c3aed;
+  --success: #00ff88;
+  --warning: #ffaa00;
+  --danger: #ff3366;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #060910;
+}
+::-webkit-scrollbar-thumb {
+  background: #1e2d4a;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #00d4ff44;
+}
+
+/* HAL Card */
+.hal-card {
+  @apply bg-[#0f1629] border border-[#1e2d4a] rounded-xl;
+}
+
+/* Glowing accent border */
+.hal-glow {
+  box-shadow: 0 0 20px rgba(0, 212, 255, 0.15);
+  border-color: rgba(0, 212, 255, 0.3) !important;
+}
+
+.hal-glow-danger {
+  box-shadow: 0 0 20px rgba(255, 51, 102, 0.15);
+}
+
+.hal-glow-success {
+  box-shadow: 0 0 20px rgba(0, 255, 136, 0.1);
+}
+
+/* Status indicators */
+.status-dot {
+  @apply w-2 h-2 rounded-full inline-block;
+}
+.status-dot.online { @apply bg-[#00ff88]; box-shadow: 0 0 6px #00ff88; }
+.status-dot.warning { @apply bg-[#ffaa00]; }
+.status-dot.danger { @apply bg-[#ff3366]; }
+.status-dot.offline { @apply bg-slate-600; }
+
+/* Pulse animation for live data indicator */
+@keyframes pulse-ring {
+  0% { transform: scale(0.8); opacity: 1; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+.live-indicator::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  background: #00ff88;
+  animation: pulse-ring 1.5s ease-out infinite;
+}
+
+/* Tremor overrides for dark theme */
+.tremor-Card-root {
+  background-color: #0f1629 !important;
+  border-color: #1e2d4a !important;
+}
+
+/* NextUI dark overrides */
+.nextui-c-PJLV {
+  background-color: #0f1629 !important;
+}
+
+/* Monospace data */
+.font-data {
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-size: 0.8rem;
+}
+
+/* Bay grid cell */
+.bay-cell {
+  @apply relative rounded-lg border-2 p-3 cursor-pointer transition-all duration-200;
+}
+.bay-cell.available {
+  @apply border-[#00ff88]/30 bg-[#00ff88]/5 hover:bg-[#00ff88]/10;
+}
+.bay-cell.occupied {
+  @apply border-[#ff3366]/30 bg-[#ff3366]/5;
+}
+.bay-cell.maintenance {
+  @apply border-[#ffaa00]/30 bg-[#ffaa00]/5;
+}
+.bay-cell.reserved {
+  @apply border-[#00d4ff]/30 bg-[#00d4ff]/5;
+}
+
+/* Leaflet map dark theme */
+.leaflet-container {
+  background: #0a0e1a !important;
+  border-radius: 12px;
+}
+.leaflet-tile-pane {
+  filter: brightness(0.6) saturate(0.3) hue-rotate(180deg);
+}
